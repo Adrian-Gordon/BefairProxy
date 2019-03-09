@@ -16,6 +16,7 @@
     "should": "^13.2.3"
   },
   "dependencies": {
+    "moment": "^2.24.0",
     "mongodb": "^3.1.10",
     "nconf": "^0.10.0",
     "request": "^2.88.0",

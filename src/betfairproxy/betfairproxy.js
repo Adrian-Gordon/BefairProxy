@@ -54,7 +54,22 @@ class BetfairProxy{
 
 	}
 
-	getMarkets(){
+
+	/* Get market ids 
+	*@param {string} code - "flat|jumps|all"
+	*@param {string} markettype - "win|place|all"
+	**/
+
+	getMarkets(code,markettype){
+
+		let marketTypeCodes=["WIN", "PLACE"]
+
+		if(markettype == 'win'){
+			marketTypeCodes=["WIN"]
+		}
+		else if(markettype == 'place'){
+			marketTypeCodes=["PLACE"]
+		}
 		const options = {
 			url:this.apiUrl,
 			method:"POST",
@@ -69,7 +84,7 @@ class BetfairProxy{
 		 		"method":"SportsAPING/v1.0/listMarketCatalogue",
 		 	 	"params": {"filter":{"eventTypeIds": ["7"],
 	 	 					"marketCountries":["GB","IE"],
-	 	 					"marketTypeCodes":["WIN","PLACE"],
+	 	 					"marketTypeCodes":marketTypeCodes,
 	 	 					"marketStartTime":{"from":new Date().toJSON()}},
 	 	 					"sort":"FIRST_TO_START",
 	 	 					"maxResults":"100",
@@ -85,7 +100,21 @@ class BetfairProxy{
 			request(options)
 			.then(response => {
 				//console.log(response)
-				resolve(response)
+				let racesArray=[]
+				response.result.forEach(race => {
+					if(code == 'jumps'){
+						if((race.marketName.indexOf('NHF') !== -1) || (race.marketName.indexOf(' Hrd') !== -1) || (race.marketName.indexOf(' Chs') !== -1)){
+							racesArray.push(race)
+						}
+					}
+					else if(code == 'flat'){
+						if((race.marketName.indexOf('NHF') === -1) && (race.marketName.indexOf(' Hrd') === -1) && (race.marketName.indexOf(' Chs') === -1)){
+							racesArray.push(race)
+						}
+					}
+					else racesArray.push(race)
+				})
+				resolve(racesArray)
 			})
 		})
 
