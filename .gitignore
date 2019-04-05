@@ -3,3 +3,6 @@ testconfig.json
 /src/betfairproxy/node_modules
 .DS_Store
 src/.DS_store
+*.sh
+*.json
+
